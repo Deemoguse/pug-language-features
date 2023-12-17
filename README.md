@@ -38,20 +38,27 @@ In addition, you will no longer have to look for a suitable theme for the correc
 <details>
 <summary>🤩 Comparison 🌈</summary>
 
+[import-extends-old]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/import-extends-old.png
+[import-extends-new]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/import-extends-new.png
+[mixin-with-block-variables-old]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/mixin-with-block-variables-old.png
+[mixin-with-block-variables-new]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/mixin-with-block-variables-new.png
+[mixin-with-dynamic-name-old]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/mixin-with-dynamic-name-old.png
+[mixin-with-dynamic-name-new]: https://raw.githubusercontent.com/Deemoguse/pug-language-features/main/assets/syntaxes/mixin-with-dynamic-name-new.png
+
 ### Import And Extends
-| Old Syntax Highlight                                            | New Syntax Highlight                                            |
-| :-------------------------------------------------------------- | :-------------------------------------------------------------- |
-| ![import-extends-old](/assets/syntaxes/import-extends-old.png) | ![import-extends-new](/assets/syntaxes/import-extends-new.png) |
+| Old Syntax Highlight                      | New Syntax Highlight                      |
+| :---------------------------------------- | :---------------------------------------- |
+| ![import-extends-old][import-extends-old] | ![import-extends-new][import-extends-new] |
 
 ### Mixin With Block Variables
-| Old Syntax Highlight                                                                    | New Syntax Highlight                                                                    |
-| :-------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
-| ![mixin-with-block-variables-old](/assets/syntaxes/mixin-with-block-variables-old.png) | ![mixin-with-block-variables-new](/assets/syntaxes/mixin-with-block-variables-new.png) |
+| Old Syntax Highlight                                              | New Syntax Highlight                                              |
+| :---------------------------------------------------------------- | :---------------------------------------------------------------- |
+| ![mixin-with-block-variables-old][mixin-with-block-variables-old] | ![mixin-with-block-variables-new][mixin-with-block-variables-new] |
 
 ### Mixin With Dynamic Name
-| Old Syntax Highlight                                                              | New Syntax Highlight                                                              |
-| :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| ![mixin-with-dynamic-name-old](/assets/syntaxes/mixin-with-dynamic-name-old.png) | ![mixin-with-dynamic-name-new](/assets/syntaxes/mixin-with-dynamic-name-new.png) |
+| Old Syntax Highlight                                        | New Syntax Highlight                                        |
+| :---------------------------------------------------------- | :---------------------------------------------------------- |
+| ![mixin-with-dynamic-name-old][mixin-with-dynamic-name-old] | ![mixin-with-dynamic-name-new][mixin-with-dynamic-name-new] |
 </details>
 
 ## Comming Soon...
