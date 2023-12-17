@@ -1,0 +1,74 @@
+{
+	"name": "pug-language-features",
+	"displayName": "Pug Language Features",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.85.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"main": "./dist/client/index.js",
+	"scripts": {
+		"build": "rimraf ./dist && tsc"
+	},
+	"activationEvents": [
+		"*"
+	],
+	"contributes": {
+		"configurationDefaults": {
+			"editor.semanticHighlighting.enabled": true,
+			"emmet.includeLanguages": {
+				"pug": "jade"
+			}
+		},
+		"languages": [
+			{
+				"id": "pug",
+				"aliases": [
+					"Pug",
+					"pug",
+					"Jade",
+					"jade"
+				],
+				"extensions": [
+					".pug",
+					".jade"
+				],
+				"configuration": "./language-configuration.json",
+				"mimetypes": [
+					"text/pug"
+				]
+			}
+		],
+		"grammars": [
+			{
+				"language": "pug",
+				"scopeName": "source.pug",
+				"embeddedLanguages": {
+					"html": "html",
+					"source.js": "javascript",
+					"source.css": "css"
+				},
+				"path": "./syntaxes/pug.tmLanguage.json"
+			},
+			{
+				"language": "jade",
+				"scopeName": "source.jade",
+				"embeddedLanguages": {
+					"html": "html",
+					"source.js": "javascript",
+					"source.css": "css"
+				},
+				"path": "./syntaxes/pug.tmLanguage.json"
+			}
+		]
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.85.0",
+		"rimraf": "^5.0.5"
+	},
+	"dependencies": {
+		"pug-lexer": "^5.0.1"
+	}
+}

@@ -1,0 +1,587 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Pug",
+	"patterns": [
+		{ "include": "#comment" },
+		{ "include": "#illegal" },
+		{ "include": "#css-block-code" },
+		{ "include": "#js-block-code" },
+		{ "include": "#include-extends" },
+		{ "include": "#control-block-variable" },
+		{ "include": "#block-variable" },
+		{ "include": "#mixin-call" },
+		{ "include": "#mixin" },
+		{ "include": "#block-text" },
+		{ "include": "#keywords" },
+		{ "include": "#filter" },
+		{ "include": "#tag" },
+		{ "include": "#expression" },
+		{ "include": "#illegal-interpolation" },
+		{ "include": "#illegal-html-tag" }
+	],
+	"repository": {
+		"comment": {
+			"begin": "^(\\s*)//-?",
+			"patterns": [{ "include": "source.js#docblock" }],
+			"end": "^(?!(\\1\\s)|\\s*$)",
+			"name": "comment.block.pug"
+		},
+		"illegal": {
+			"patterns": [
+				{
+					"comment": "Invalid text at the beginning of the line",
+					"name": "invalid.illegal",
+					"match": "(?<=^\\s*|\\:\\s*)(\\.[^\\w-]|[^=\\w\\.#|\\s<|\\+|\\-|:]).*"
+				},
+				{
+					"comment": "Invalid use of string-escaped-interpolation",
+					"name": "invalid.illegal",
+					"match": "(?<=^\\s*|\\:\\s*)\\#[^\\{\\}\\w-].*"
+				},
+				{
+					"comment": "Invalid mixin-call",
+					"name": "invalid.illegal",
+					"match": "(?<=^\\s*|\\:\\s*)\\+[^\\w\\#](.*)?"
+				},
+				{
+					"comment": "Invalid include or extends expression (use quoteds)",
+					"match": "(?<=^\\s*|\\:\\s*)(include|extends)\\s{1,}(['\"].*)",
+					"captures": {
+						"1": { "name": "keyword.control.$1.pug" },
+						"2": { "name": "invalid.illegal.pug" }
+					}
+				}
+			]
+		},
+		"illegal-html-tag": {
+			"comment": "Invalid html tag containing a hyphenation character",
+			"name": "invalid.illegal",
+			"begin": "<[^<]+\\n",
+			"end": "(?<=[^>]+>)"
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"begin": "(?<=^\\s*)(-)?\\s*(if|else\\sif|until|while|unless|each|for)(\\s+|$)",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.dash.pug" },
+						"2": { "name": "keyword.control.$1.pug" }
+					},
+					"patterns": [{ "include": "source.js#expression" }],
+					"end": "$"
+				},
+				{
+					"begin": "(?<=^\\s*|if.*)(-)?\\s*(else)(\\s+|$)",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.dash.pug" },
+						"2": { "name": "keyword.control.$1.pug" }
+					},
+					"end": "$",
+					"endCaptures": {
+						"1": { "name": "invalid.illegal" }
+					}
+				},
+				{
+					"comment": "Case syntax blocks.",
+					"begin": "(?<=^\\s*)(-)?\\s*(case)(.*)(\\s+|$)",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.dash.pug" },
+						"2": { "name": "keyword.control.$2.pug" },
+						"3": { "patterns": [{ "include": "source.js#expression" }]}
+					},
+					"patterns": [
+						{
+							"comment": "Default. Block Expansion.",
+							"begin": "(?<=^\\s*)(-)?\\s*(default)",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.dash.pug" },
+								"2": { "name": "keyword.control.$2.pug" }
+							},
+							"end": "\\:|$",
+							"endCaptures": {
+								"0": { "name": "punctuation.definition.pug" }
+							}
+						},
+						{
+							"comment": "Case. Normal Expansion.",
+							"begin": "(?<=^\\s*)(-)?\\s*(when)([^:]*)",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.dash.pug" },
+								"2": { "name": "keyword.control.$2.pug" },
+								"3": { "patterns": [{ "include": "source.js#expression" }]},
+								"4": { "name": "punctuation.definition.pug" }
+							},
+							"end": "\\:|$",
+							"endCaptures": {
+								"0": { "name": "punctuation.definition.pug" }
+							}
+						},
+						{ "include": "$self" }
+					],
+					"end": "^(?!(\\1\\s)?|\\s*$)"
+				}
+			]
+		},
+		"block-variable": {
+			"name": "keyword.control.block.pug",
+			"match": "(?<=^\\s*|\\:\\s*)block\\s{1,}(\\w*)\\s*(.*)",
+			"captures": {
+				"1": { "name": "variable.parameter.pug" },
+				"2": { "name": "invalid.illegal.pug" }
+			}
+		},
+		"control-block-variable": {
+			"patterns": [
+				{
+					"name": "keyword.control.block.$1.pug",
+					"match": "(?<=^\\s*|\\:\\s*)block\\s{1,}(append|prepend)\\s{1,}(\\w*)(.*)",
+					"captures": {
+						"2": { "name": "variable.parameter.pug" },
+						"3": { "name": "invalid.illegal.pug" }
+					}
+				},
+				{
+					"name": "keyword.control.block.$1.pug",
+					"match": "(?<=^\\s*|\\:\\s*)(append|prepend)\\s{1,}(\\w*)(.*)",
+					"captures": {
+						"2": { "name": "variable.parameter.pug" },
+						"3": { "name": "invalid.illegal.pug" }
+					}
+				}
+			]
+		},
+		"expression": {
+			"name": "expression.embedded",
+			"match": "(?<!\\s)(=)(.*)",
+			"captures": {
+				"1": { "name": "punctuation.definition.pug" },
+				"2": { "patterns": [{ "include": "source.js" }] }
+			}
+		},
+		"string-escaped-interpolation": {
+			"patterns": [
+				{
+					"name": "invalid.illegal.pug",
+					"match": "#\\{\\}"
+				},
+				{
+					"match": "(#\\{)(.*?)(\\})",
+					"captures": {
+						"1": { "name": "string.interpolated.escaped.begin.pug" },
+						"2": { "patterns": [{ "include": "source.js" }]},
+						"3": { "name": "string.interpolated.escaped.end.pug" }
+					}
+				}
+			]
+		},
+		"string-unescaped-interpolation": {
+			"patterns": [
+				{
+					"name": "invalid.illegal.pug",
+					"match": "!\\{\\}"
+				},
+				{
+					"match": "(!\\{)(.*?)(\\})",
+					"captures": {
+						"1": { "name": "string.interpolated.escaped.begin.pug" },
+						"2": { "patterns": [{ "include": "source.js" }]},
+						"3": { "name": "string.interpolated.escaped.end.pug" }
+					}
+				}
+			]
+		},
+		"tag-interpolation": {
+			"patterns": [
+				{
+					"name": "invalid.illegal.pug",
+					"match": "#\\[\\]"
+				},
+				{
+					"match": "(#\\[)([\\s\\S]*)(\\])",
+					"captures": {
+						"1": { "name": "string.interpolated.escaped.begin.pug" },
+						"2": { "patterns": [{ "include": "$self" }]},
+						"3": { "name": "string.interpolated.escaped.end.pug" }
+					}
+				}
+			]
+		},
+		"illegal-interpolation": {
+			"patterns": [
+				{
+					"name": "invalid.illegal.pug",
+					"begin": "#\\[",
+					"patterns": [
+						{ "include": "#illegal-interpolation" },
+						{ "include": "#illegal" }
+					],
+					"end": "\\]\\s*.*?"
+				},
+				{
+					"name": "invalid.illegal.pug",
+					"begin": "(!|#)\\{",
+					"patterns": [
+						{ "include": "#illegal-interpolation" },
+						{ "include": "#illegal" }
+					],
+					"end": "\\}\\s*.*?"
+				}
+			]
+		},
+		"interpolation": {
+			"patterns": [
+				{ "include": "#string-escaped-interpolation" },
+				{ "include": "#string-unescaped-interpolation" },
+				{ "include": "#tag-interpolation" },
+				{ "include": "#illegal-interpolation" }
+			]
+		},
+		"tag": {
+			"patterns": [
+				{
+					"comment": "HTML tags.",
+					"match": "(?=<.*[^\\n\\r]*).*?(?<=>)",
+					"captures": {
+						"0": { "patterns": [{ "include": "text.html.basic" }]}
+					}
+				},
+				{
+					"comment": "Pug tag with dynamic name.",
+					"name": "meta.tag.pug",
+					"begin": "(?<=^\\s*|\\:\\s*|#\\[\\s*)(#\\{.*\\})",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.evaluated-tag.pug",
+							"patterns": [{ "include": "#string-escaped-interpolation" }]
+						}
+					},
+					"patterns": [
+						{ "include": "#expression" },
+						{ "include": "#attributes" },
+						{ "include": "#attribute-mixin" },
+						{ "include": "#tag-text" }
+					],
+					"end": "(:|\\s*$)",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				},
+				{
+					"comment": "Pug tags",
+					"name": "meta.tag.$1.pug",
+					"begin": "(?<=^\\s*|\\:\\s*|#\\[\\s*)([-\\w]+)",
+					"beginCaptures": {
+						"1": { "name": "entity.name.tag.$1.pug" },
+						"2": { "patterns": [{ "include": "#string-escaped-interpolation" }]}
+					},
+					"patterns": [
+						{ "include": "#expression" },
+						{ "include": "#attributes" },
+						{ "include": "#attribute-mixin" },
+						{ "include": "#tag-text" }
+					],
+					"end": "(:|\\s*$)",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				},
+				{
+					"comment": "Pug div tag with class or id.",
+					"name": "meta.tag.div.pug",
+					"begin": "(?<=^\\s*|\\:\\s*|#\\[\\s*)(?=\\.|\\#)",
+					"patterns": [
+						{ "include": "#attributes" },
+						{ "include": "#attribute-mixin" },
+						{ "include": "#tag-text" }
+					],
+					"end": "(:|\\s*$)",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				},
+				{ "include": "#tag-interpolation" }
+			]
+		},
+		"tag-text": {
+			"begin": "\\s{1,}",
+			"patterns": [{ "include": "#interpolation" }],
+			"end": "$"
+		},
+		"block-text": {
+			"begin": "^\\s*(\\|)",
+			"beginCaptures": {
+				"1": { "name": "meta.block.pipe.pug punctuation.definition.pug" }
+			},
+			"patterns": [
+				{ "include": "#tag-interpolation" },
+				{ "include": "#string-escaped-interpolation" },
+				{ "include": "#string-unescaped-interpolation" },
+				{ "include": "#illegal-interpolation" }
+			],
+			"end": "$"
+		},
+		"attributes": {
+			"comment": "Defining attributes and abbreviations by type `.class` and `#id`",
+			"patterns": [
+				{
+					"match": "(\\.{1})[-\\w]{1,}",
+					"name": "string.quoted.single meta.attribute.class.html.pug string.pug"
+				},
+				{
+					"match": "(\\#{1})[-\\w]{1,}",
+					"name": "string.quoted.single meta.attribute.id.html.pug string.pug"
+				},
+				{
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": { "name": "punctuation.definition.bracket.pug"}
+					},
+					"patterns": [
+						{ "match": ",", "name": "punctuation.separator.comma.js.pug" },
+						{ "include": "#attribute" },
+						{ "include": "text.html.basic#attribute" }
+					],
+					"end": "\\)",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.bracket.pug"}
+					}
+				}
+			]
+		},
+		"attribute": {
+			"patterns": [
+				{
+					"name": "meta.attribute.evaluated-attribute.$0.html.pug",
+					"begin": "[-\\w]+(?=\\s*=\\s*[^\"'])",
+					"beginCaptures": {
+						"0": { "name": "entity.other.attribute-name.$0.html.pug" }
+					},
+					"patterns": [
+						{
+							"begin": "!?=",
+							"beginCaptures": {
+								"0": { "name": "punctuation.separator.key-value.html.pug" }
+							},
+							"patterns": [{ "include": "source.js#expression" }],
+							"end": "(?<=[^\\s=])(?!\\s*=)|(?=\\))"
+						}
+					],
+					"end": "(?=\\s*+[^=\\s])"
+				},
+				{
+					"name": "meta.attribute.unrecognized.$0.html.pug",
+					"begin": "[-\\w]+(?=\\))",
+					"beginCaptures": {
+						"0": { "name": "entity.other.attribute-name.$0.html.pug" }
+					},
+					"end": "(?=\\s*+[^=\\s])"
+				}
+			]
+		},
+		"attribute-mixin": {
+			"begin": "(\\&\\w+)(\\()",
+			"beginCaptures": {
+				"1": { "name": "storage.type.function.pug" },
+				"2": { "name": "punctuation.definition.bracket.pug" }
+			},
+			"end": "(\\))",
+			"endCaptures": {
+				"1": { "name": "punctuation.definition.bracket.pug" }
+			},
+			"name": "entity.other.attribute-mixin.pug",
+			"patterns": [
+				{ "include": "source.js#expression" },
+				{ "match": ",", "name": "punctuation.separator.comma.js" }
+			]
+		},
+		"include-extends": {
+			"name": "storage.modifier.$1.pug meta.$1.pug",
+			"match": "(?<=^\\s*|\\:\\s*)(include|extends)\\s{1,}(\\S*)\\s*(.*)",
+			"captures": {
+				"1": { "name": "keyword.control.$1.pug" },
+				"2": { "name": "string.pug" },
+				"3": { "name": "invalid.illegal.pug" }
+			}
+		},
+		"mixin": {
+			"name": "meta.mixin.$2.pug",
+			"begin": "(?<=^\\s*)(mixin)\\s{1,}([-\\w]*)",
+			"beginCaptures": {
+				"1": { "name": "storage.type.function.pug" },
+				"2": { "name": "entity.name.class.pug"}
+			},
+			"patterns": [
+				{ "include": "#control-block-variable" },
+				{
+					"name": "keyword.control.$1.pug",
+					"match": "(?<=^\\s*|\\:\\s*)(block)\\s{1,}(.*)",
+					"captures": {
+						"2": { "name": "invalid.illegal" }
+					}
+				},
+				{
+					"begin": "(?<!^)\\(",
+					"beginCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					},
+					"patterns": [{ "include": "source.ts#function-parameters-body" }],
+					"end": "\\)(.*)?$",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" },
+						"1": { "name": "invalid.illegal" }
+					}
+				},
+				{ "include": "$self" }
+			],
+			"end": "^(?!(\\s)|\\s*$)"
+		},
+		"mixin-attributes": {
+			"begin": "(?<!\\))\\(",
+			"beginCaptures": {
+				"0": { "name": "punctuation.definition.pug" }
+			},
+			"patterns": [
+				{
+					"match": "[\\w-]+\\s*=\\s*.*?",
+					"captures": {
+						"0": {
+							"patterns": [
+								{ "include": "#attribute" },
+								{ "include": "text.html.basic#attribute" }
+							]
+						}
+					}
+				},
+				{ "include": "source.js#expression" }
+			],
+			"end": "\\)",
+			"endCaptures": {
+				"0": { "name": "punctuation.definition.pug" }
+			}
+		},
+		"mixin-call": {
+			"patterns": [
+				{
+					"comment": "Mixin call with dynamic name",
+					"name": "meta.mixin-call.evaluated-mixin",
+					"begin": "(?<=^\\s*|\\:\\s*|#\\[)(\\+)(#\\{.*?\\})",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.pug" },
+						"2": { "patterns": [{ "include": "#string-escaped-interpolation"}] }
+					},
+					"patterns": [
+						{ "include": "#mixin-attributes" },
+						{ "include": "#attributes" },
+						{ "include": "#attribute-mixin" }
+					],
+					"end": ":|\\s|\\)|\\$"
+				},
+				{
+					"comment": "Mixin call with static name",
+					"name": "meta.mixin-call.$2",
+					"begin": "(?<=^\\s*|\\:\\s*|#\\[)(\\+)([\\w-]*)",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.pug" },
+						"2": { "name": "entity.name.class.pug" }
+					},
+					"patterns": [
+						{ "include": "#mixin-attributes" },
+						{ "include": "#attributes" },
+						{ "include": "#attribute-mixin" }
+					],
+					"end": ":|\\s|\\)|\\$"
+				}
+			]
+		},
+		"filter": {
+			"name": "source.pug",
+			"begin": "(\\:)([\\w-]*)$",
+			"beginCaptures": {
+				"1": { "name": "punctuation.definition.pug" },
+				"2": { "name": "entity.name.filter.$1.pug entity.name.function.pug" }
+			},
+			"patterns": [{ "include": "#interpolation" }],
+			"end": "^(?!(\\1\\s))"
+		},
+		"css-block-code": {
+			"name": "source.css.pug",
+			"begin": "^(\\s*)(style.*?)(\\.$)",
+			"beginCaptures": {
+				"2": { "patterns": [{ "include": "#tag" }]},
+				"3": { "name": "punctuation.definition.dash.pug" }
+			},
+			"patterns": [{ "include": "source.css" }],
+			"end": "^(?!(\\1\\s)|\\s*$)"
+		},
+		"js-block-code": {
+			"patterns": [
+				{
+					"name": "source.js.pug",
+					"begin": "^(\\s*)(script(\\(.*?(type=\"(?!module)\")?.*?\\))?\\.)$",
+					"beginCaptures": {
+						"2": { "patterns": [{ "include": "#tag" }]},
+						"3": { "name": "punctuation.definition.dash.pug" }
+					},
+					"patterns": [{ "include": "source.js"}],
+					"end": "^(?!(\\1\\s)|\\s*$)"
+				},
+				{
+					"name": "source.js.pug",
+					"begin": "^(\\s*)(-)$",
+					"beginCaptures": {
+						"2": { "name": "punctuation.definition.dash.pug" }
+					},
+					"patterns": [{ "include": "#interpolation" }],
+					"end": "^(?!(\\1\\s)|\\s*$)"
+				},
+				{
+					"name": "source.js.pug",
+					"begin": "(?<=^\\s*)(-)(.*)(\\s+|$)",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.dash.pug" },
+						"2": { "patterns": [{ "include": "source.js" }]}
+					},
+					"end": "$"
+				}
+			]
+		},
+		"brackets": {
+			"patterns": [
+				{
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					},
+					"patterns": [{ "include": "source.js" }],
+					"end": "\\)",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				},
+				{
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					},
+					"patterns": [{ "include": "source.js" }],
+					"end": "\\}",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				},
+				{
+					"begin": "\\[",
+					"beginCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					},
+					"patterns": [{ "include": "source.js" }],
+					"end": "\\]",
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.pug" }
+					}
+				}
+			]
+		}
+	},
+	"scopeName": "source.pug"
+}

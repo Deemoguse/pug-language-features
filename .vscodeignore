@@ -1,0 +1,9 @@
+.vscode/**
+.vscode-test/**
+
+client/**
+server/**
+fixtures/**
+
+.gitignore
+.editorconfig

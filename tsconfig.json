@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"lib": ["ES2020", "DOM"],
+		"inlineSources": true,
+		"inlineSourceMap": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"outDir": "dist",
+		"strict": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true
+	},
+
+	"include": [
+		"./server",
+		"./client"
+	],
+	"exclude": [
+		"node_modules",
+		"./dist",
+		"./assets",
+		"./fixtures",
+		"./syntaxes"
+	]
+}
