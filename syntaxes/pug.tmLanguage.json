@@ -14,6 +14,7 @@
 		{ "include": "#block-text" },
 		{ "include": "#keywords" },
 		{ "include": "#filter" },
+		{ "include": "#tag-with-pipeless-text" },
 		{ "include": "#tag" },
 		{ "include": "#expression" },
 		{ "include": "#illegal-interpolation" },
@@ -234,6 +235,27 @@
 				{ "include": "#string-unescaped-interpolation" },
 				{ "include": "#tag-interpolation" },
 				{ "include": "#illegal-interpolation" }
+			]
+		},
+		"tag-with-pipeless-text": {
+			"patterns": [
+				{
+					"begin": "^(\\s*.*?)(:\\s*(\\.$))",
+					"beginCaptures": {
+						"1": { "patterns": [{ "include": "#tag" }]},
+						"3": { "name": "invalid.illegal" }
+					},
+					"patterns": [{ "include": "#interpolation" }],
+					"end": "^(?!(\\1\\s)|\\s*$)"
+				},
+				{
+					"begin": "^(\\s*)(.*?)(\\.$)",
+					"beginCaptures": {
+						"0": { "patterns": [{ "include": "#tag" }]}
+					},
+					"patterns": [{ "include": "#interpolation" }],
+					"end": "^(?!(\\1\\s)|\\s*$)"
+				}
 			]
 		},
 		"tag": {
@@ -489,18 +511,22 @@
 						{ "include": "#attributes" },
 						{ "include": "#attribute-mixin" }
 					],
-					"end": ":|\\s|\\)|\\$"
+					"end": "^(?!(\\1\\s)|\\s*$)"
 				}
 			]
 		},
 		"filter": {
 			"name": "source.pug",
-			"begin": "(\\:)([\\w-]*)$",
+			"begin": "(\\s*)(\\:)([\\w-]*)",
 			"beginCaptures": {
-				"1": { "name": "punctuation.definition.pug" },
-				"2": { "name": "entity.name.filter.$1.pug entity.name.function.pug" }
+				"2": { "name": "punctuation.definition.pug" },
+				"3": { "name": "entity.name.filter.$1.pug entity.name.function.pug" }
 			},
-			"patterns": [{ "include": "#interpolation" }],
+			"patterns": [
+				{ "include": "#filter" },
+				{ "include": "#attributes" },
+				{ "include": "#interpolation" }
+			],
 			"end": "^(?!(\\1\\s))"
 		},
 		"css-block-code": {
