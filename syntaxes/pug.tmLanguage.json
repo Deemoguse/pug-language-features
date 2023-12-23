@@ -275,13 +275,15 @@
 						"1": {
 							"name": "entity.name.evaluated-tag.pug",
 							"patterns": [{ "include": "#string-escaped-interpolation" }]
-						}
+						},
+						"2": { "name": "invalid.illegal" }
 					},
 					"patterns": [
 						{ "include": "#expression" },
 						{ "include": "#attributes" },
 						{ "include": "#attribute-mixin" },
-						{ "include": "#tag-text" }
+						{ "include": "#tag-text" },
+						{ "match": "[^\\.]*", "name": "invalid.illegal" }
 					],
 					"end": "(:|\\s*$)",
 					"endCaptures": {
@@ -294,13 +296,14 @@
 					"begin": "(?<=^\\s*|\\:\\s*|#\\[\\s*)([-\\w]+)",
 					"beginCaptures": {
 						"1": { "name": "entity.name.tag.$1.pug" },
-						"2": { "patterns": [{ "include": "#string-escaped-interpolation" }]}
+						"2": { "name": "invalid.illegal" }
 					},
 					"patterns": [
 						{ "include": "#expression" },
 						{ "include": "#attributes" },
 						{ "include": "#attribute-mixin" },
-						{ "include": "#tag-text" }
+						{ "include": "#tag-text" },
+						{ "match": "[^\\.]*", "name": "invalid.illegal" }
 					],
 					"end": "(:|\\s*$)",
 					"endCaptures": {

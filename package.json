@@ -12,12 +12,8 @@
 	"scripts": {
 		"build": "rimraf ./dist && tsc"
 	},
-	"activationEvents": [
-		"*"
-	],
 	"contributes": {
 		"configurationDefaults": {
-			"editor.semanticHighlighting.enabled": true,
 			"emmet.includeLanguages": {
 				"pug": "jade"
 			}
